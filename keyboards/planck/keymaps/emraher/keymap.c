@@ -28,8 +28,11 @@ enum planck_layers {
 enum custom_keycodes {
     MY_ARROW = SAFE_RANGE,
     MY_PIPE,
-    MY_URL
-};
+    MY_URL,
+    MY_RESTART,
+    MY_SOURCE,
+    MY_CONSOLE
+  };
 
 #define LOWER MO(_LOWER)
 #define RAISE MO(_RAISE)
@@ -37,7 +40,7 @@ enum custom_keycodes {
 #define PSCR2    LGUI(LSFT(KC_4))       // Print screen on OSX with bounding box - Save to desktop
 #define PSCR3    LGUI(LSFT(LCTL(KC_3))) // Print screen on OSX
 #define PSCR4    LGUI(LSFT(LCTL(KC_4))) // Print screen on OSX with bounding box
-#define MOF MO(_FUNCTION)
+#define MOF LT(_FUNCTION, KC_RGHT)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -56,7 +59,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     HYPR_T(KC_ESC) , KC_Q    , KC_W    , KC_E    , KC_R  , KC_T   , KC_Y   , KC_U  , KC_I           , KC_O           , KC_P         , KC_BSPC        ,
     CTL_T(KC_TAB)  , KC_A    , KC_S    , KC_D    , KC_F  , KC_G   , KC_H   , KC_J  , KC_K           , KC_L           , KC_SCLN      , KC_QUOT        ,
     KC_LSFT        , KC_Z    , KC_X    , KC_C    , KC_V  , KC_B   , KC_N   , KC_M  , KC_COMM        , KC_DOT         , KC_SLSH      , RSFT_T(KC_ENT) ,
-    MOF            , KC_LCTL , KC_LALT , KC_LGUI , LOWER , KC_SPC , KC_SPC , RAISE , GUI_T(KC_LEFT) , ALT_T(KC_DOWN) , CTL_T(KC_UP) , KC_RGHT
+    MOF            , KC_LCTL , KC_LALT , KC_LGUI , LOWER , KC_SPC , KC_SPC , RAISE , GUI_T(KC_LEFT) , ALT_T(KC_DOWN) , CTL_T(KC_UP) , MOF
 ),
 
 /* Lower
@@ -106,10 +109,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |      |      |      |      |      |             |      |      |      |      |      |
  * `-----------------------------------------------------------------------------------' */
 [_FUNCTION] = LAYOUT_planck_grid(
-    _______ , MY_URL , _______,  _______, _______, _______, _______, _______ , _______, _______, _______, _______,
-    _______ , _______, _______,  _______, _______, _______, _______, MY_ARROW, _______, _______, _______, _______,
-    _______ , _______, _______,  _______, _______, _______, _______, MY_PIPE , _______, _______, _______, _______,
-    _______ , _______, _______,  _______, _______, _______, _______, _______ , _______, _______, _______, _______
+    _______ , MY_SOURCE, MY_CONSOLE,  _______, _______, _______, _______, MY_RESTART, _______, _______, _______, MY_URL ,
+    _______ , _______  , _______   ,  _______, _______, _______, _______, MY_ARROW  , _______, _______, _______, _______,
+    _______ , _______  , _______   ,  _______, _______, _______, _______, MY_PIPE   , _______, _______, _______, _______,
+    _______ , _______  , _______   ,  _______, _______, _______, _______, _______   , _______, _______, _______, _______
 ),
 
 /* Adjust (Lower + Raise)
@@ -157,6 +160,25 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
            SEND_STRING("eremrah.com"); 
         }
         break;
+
+    case MY_RESTART:
+        if (record->event.pressed) {
+           SEND_STRING(SS_LSFT(SS_LGUI(SS_TAP(X_F10)))); 
+        }
+        break;
+
+    case MY_CONSOLE:
+        if (record->event.pressed) {
+           SEND_STRING(SS_LCTL("2")); 
+        }
+        break;
+
+    case MY_SOURCE:
+        if (record->event.pressed) {
+           SEND_STRING(SS_LCTL("1")); 
+        }
+        break;
+
     }
     return true;
 };
